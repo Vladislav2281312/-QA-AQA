@@ -1,3 +1,4 @@
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -19,11 +20,11 @@ public class MtsByOnlineTopUpTest {
     @BeforeEach
     public void setUp() {
 
-        System.setProperty("webdriver.chrome.driver", "D:/Dowlands/chromedriver-win64/chromedriver.exe");
-        driver = new ChromeDriver();
+        WebDriverManager.chromedriver().setup();
+        driver  = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().window().maximize();
-        driver.get("https://mts.by");
+        driver.get("https://www.mts.by/");
         try {
             WebElement acceptCookiesButton = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//button[text()=\"Принять\"]")
