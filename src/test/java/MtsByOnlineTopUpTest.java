@@ -10,6 +10,11 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import pages.MainPage;
 import views.PaymentView;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class MtsByOnlineTopUpTest {
 
@@ -42,6 +47,7 @@ public class MtsByOnlineTopUpTest {
     }
 
     @Test
+    @DisplayName("Проверка названия блока \"Онлайн пополнение без комиссии\"")
     public void testBlockTitle() {
         mainPage.scrollToPaymentBlock();
 
@@ -52,6 +58,7 @@ public class MtsByOnlineTopUpTest {
     }
 
     @Test
+    @DisplayName("Проверка наличия логотипов платежных систем")
     public void testPaymentSystemLogosPresence() {
         mainPage.scrollToPaymentBlock();
 
@@ -63,6 +70,7 @@ public class MtsByOnlineTopUpTest {
     }
 
     @Test
+    @DisplayName("Проверка работы ссылки \"Подробнее о сервисе\"")
     public void testMoreDetailsLink() {
         mainPage.scrollToPaymentBlock();
 
@@ -87,6 +95,7 @@ public class MtsByOnlineTopUpTest {
     }
 
     @Test
+    @DisplayName("Проверка работы кнопки \"Продолжить\"")
     public void testFormFillAndContinueButton() {
         mainPage.scrollToPaymentBlock();
         mainPage.selectCommunicationServices(CommunicationServices.PHONE_SERVICES);
@@ -109,13 +118,28 @@ public class MtsByOnlineTopUpTest {
         // Возвращаемся из iframe, если нужно дальше взаимодействовать с основной страницей
         driver.switchTo().defaultContent();
     }
+    @ParameterizedTest
+    @EnumSource(CommunicationServices.class)
+    @DisplayName("Проверка placeholder в форме заполнения данных об оплате")
+    public void testFormFillCommunicationServices(CommunicationServices service) throws InterruptedException {
+        // Инициализация HashMap с помощью анонимного блока без цикла
+        Map<CommunicationServices, String> mapInfoTextValues = new HashMap() {{
+            put(CommunicationServices.PHONE_SERVICES, "Номер телефона");
+            put(CommunicationServices.HOME_INTERNET, "Номер абонента");
+            put(CommunicationServices.INSTALLMENT_PLAN, "Номер счета на 44");
+            put(CommunicationServices.DEBT, "Номер счета на 2073");
+        }};
 
-    //@ParameterizedTest
-   // @EnumSource(CommunicationServices.class)
-   // public void testFormFillCommunicationServices(CommunicationServices option) {
-      //  mainPage.scrollToPaymentBlock();
-      //  mainPage.selectCommunicationServices(option);
-//как сделать тест чтобы он запускался с параметрами (data source)
-        //как сделать параметриззированный тест в junit
+        mainPage.scrollToPaymentBlock();
+        mainPage.selectCommunicationServices(service);
+
+        Assertions.assertEquals("Сумма", mainPage.getSumPlaceholder());
+        Assertions.assertEquals(mapInfoTextValues.get(service), mainPage.getNumberPlaceholder());
+        Assertions.assertEquals("E-mail для отправки чека", mainPage.getEmailPlaceholder());
+
     }
+
+}
+
+
 

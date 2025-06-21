@@ -1,6 +1,7 @@
 package pages;
 
 import enums.CommunicationServices;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,6 +39,10 @@ public class MainPage {
     // Ввод номера телефона
     @FindBy(xpath = startOfFormLocator + "//input[1]")
     private WebElement infoInput;
+
+    // Ввод номера телефона
+    @FindBy(xpath = startOfFormLocator + "//input[contains(@id,\"email\")]")
+    private WebElement emailInput;
 
     @FindBy(xpath = "//button[@class=\"select__header\"]")
     private WebElement serviceConnectionButton;
@@ -97,4 +102,19 @@ public class MainPage {
         wait.until(ExpectedConditions.elementToBeClickable(serviceConnectionButton)).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//p[contains(text(),\"%s\")]", option.getTitle())))).click();
     }
+
+    public String getSumPlaceholder() {
+        return sumInput.getAttribute("placeholder");
+    }
+
+    @Step("Получение значения placeholder для поля Сумма")
+    public String getNumberPlaceholder() {
+        return infoInput.getAttribute("placeholder");
+    }
+
+    public String getEmailPlaceholder() {
+        return emailInput.getAttribute("placeholder");
+    }
+
+
 }
